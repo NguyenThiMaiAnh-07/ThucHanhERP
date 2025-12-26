@@ -1,0 +1,232 @@
+<odoo>
+
+
+
+    <record id="action_view_appointments_of_doctor" model="ir.actions.act_window">
+        <field name="name">Lịch khám của Bác sĩ</field>
+        <field name="res_model">pediatric.appointment</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doctor_id', '=', active_id)]</field>
+        <field name="context">{'default_doctor_id': active_id}</field>
+    </record>
+
+    <record id="action_view_bookings_of_doctor" model="ir.actions.act_window">
+        <field name="name">Yêu cầu đặt lịch của Bác sĩ</field>
+        <field name="res_model">pediatric.booking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doctor_id', '=', active_id)]</field>
+        <field name="context">{'default_doctor_id': active_id}</field>
+    </record>
+
+
+    <record id="action_view_queues_of_doctor" model="ir.actions.act_window">
+        <field name="name">Hàng chờ của Bác sĩ</field>
+        <field name="res_model">reception.queue</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doctor_id', '=', active_id)]</field>
+        <field name="context">{'default_doctor_id': active_id}</field>
+    </record>
+
+
+
+    <record id="view_pediatric_doctor_form" model="ir.ui.view">
+        <field name="name">pediatric.doctor.form</field>
+        <field name="model">pediatric.doctor</field>
+        <field name="arch" type="xml">
+            <form string="Hồ sơ Bác sĩ">
+                <header>
+                    <field name="is_available" widget="boolean_toggle" string="Đang nhận khám"/>
+                </header>
+
+                <sheet>
+
+                    <div class="oe_button_box" name="button_box">
+
+                       
+                        <button name="action_view_employee_profile"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-id-card-o">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Hồ sơ</span>
+                                <span class="o_stat_text">Nhân sự</span>
+                            </div>
+                        </button>
+
+                        
+                        <button name="action_open_doctor_calendar"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-calendar">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Lịch</span>
+                                <span class="o_stat_text">Làm việc</span>
+                            </div>
+                        </button>
+
+                       
+                        <button name="%(action_view_queues_of_doctor)d"
+                                type="action"
+                                class="oe_stat_button"
+                                icon="fa-list-ol">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Hàng chờ</span>
+                                <span class="o_stat_text">của tôi</span>
+                            </div>
+                        </button>
+
+                    </div>
+
+                    <field name="image_1920" widget="image" class="oe_avatar"
+                           options="{'preview_image': 'image_128'}"/>
+
+                    <div class="oe_title">
+                        <label for="employee_id" class="oe_edit_only" string="Chọn nhân viên bác sĩ"/>
+                        <h1>
+                            <field name="employee_id"
+                                   placeholder="Chọn nhân viên..."
+                                   domain="['|', ('department_id.name','ilike','Bác sĩ'), ('department_id.name','ilike','Doctor')]"
+                                   options="{'no_create': True}"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Thông tin chuyên môn">
+                            <field name="employee_code" string="Mã nhân viên"/>
+                            <field name="specialty_id" string="Chuyên khoa"/>
+                            <field name="degree" string="Học vị / Học hàm"/>
+                            <field name="license_number" string="Số chứng chỉ hành nghề"/>
+                            <field name="consultation_fee" widget="monetary" string="Phí khám (VNĐ)"/>
+                        </group>
+
+                        <group string="Thông tin liên hệ">
+                            <field name="job_title" string="Chức danh chuyên môn"/>
+                            <field name="phone_contact" string="Số điện thoại liên hệ"/>
+                            <field name="email_contact" string="Email liên hệ"/>
+                            <field name="department_id" string="Phòng ban" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+
+                       
+                        <page string="Thông tin nhân sự">
+
+                            <group>
+                                <group string="Thông tin cá nhân">
+                                    <field name="birthday" string="Ngày sinh"/>
+                                    <field name="gender" string="Giới tính"/>
+                                    <field name="marital" string="Hôn nhân"/>
+                                    <field name="children" string="Số con"/>
+                                </group>
+
+                                <group string="Giấy tờ">
+                                    <field name="identification_id" string="CMND / CCCD"/>
+                                    <field name="issue_date" string="Ngày cấp"/>
+                                    <field name="issue_place" string="Nơi cấp"/>
+                                    <field name="passport_id" string="Hộ chiếu"/>
+                                    <field name="insurance_code" string="Mã số BHYT"/>
+                                    <field name="insurance_start" string="Giá trị từ ngày"/>
+                                    <field name="insurance_end" string="Giá trị đến ngày"/>
+                                </group>
+                            </group>
+
+                            <group>
+                                <group string="Tổ chức">
+                                    <field name="company_id" string="Công ty"/>
+                                    <field name="category_ids" string="Nhóm nhân viên" widget="many2many_tags"/>
+                                    <field name="resource_calendar_id" string="Lịch làm việc"/>
+                                    <field name="tz" string="Múi giờ"/>
+                                    <field name="lang" string="Ngôn ngữ"/>
+                                </group>
+
+                                <group string="Khác">
+                                    <field name="active" string="Đang hoạt động"/>
+                                    <field name="create_date" string="Ngày tạo" readonly="1"/>
+                                    <field name="write_date" string="Ngày cập nhật" readonly="1"/>
+                                </group>
+                            </group>
+
+                        </page>
+
+                    
+                        <page string="Lịch khám">
+                            <group string="Lịch tái khám / Đang điều trị">
+                                <field name="appointment_ids" readonly="1">
+                                    <list default_order="appointment_datetime desc"
+                                          decoration-info="state == 'waiting'"
+                                          decoration-success="state == 'done'"
+                                          decoration-warning="state == 'in_consult'">
+                                        <field name="appointment_datetime" string="Thời gian"/>
+                                        <field name="name" string="Mã ca"/>
+                                        <field name="patient_id" string="Bệnh nhi"/>
+                                        <field name="visit_type" string="Loại khám"/>
+                                        <field name="state" widget="badge"/>
+                                    </list>
+                                </field>
+                            </group>
+
+                            <group string="Yêu cầu đặt lịch mới">
+                                <field name="booking_ids" readonly="1">
+                                    <list default_order="appointment_date desc, booking_time desc"
+                                          decoration-muted="state == 'cancel'">
+                                        <field name="appointment_date" string="Ngày khám"/>
+                                        <field name="session" string="Buổi"/>
+                                        <field name="child_name" string="Bệnh nhi"/>
+                                        <field name="parent_phone" string="SĐT phụ huynh"/>
+                                        <field name="visit_type" string="Loại khám"/>
+                                        <field name="state" widget="badge"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+
+                    
+                        <page string="Đăng ký lịch rảnh">
+                            <group string="Lịch làm việc theo ca">
+                                <field name="schedule_ids">
+                                    <list>
+                                        <field name="weekday"/>
+                                        <field name="shift"/>
+                                        <field name="time_start" widget="float_time"/>
+                                        <field name="time_end" widget="float_time"/>
+                                        <field name="capacity"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    
+
+    <record id="view_pediatric_doctor_list" model="ir.ui.view">
+        <field name="name">pediatric.doctor.list</field>
+        <field name="model">pediatric.doctor</field>
+        <field name="arch" type="xml">
+            <list string="Danh sách Bác sĩ">
+                <field name="employee_code" string="Mã nhân viên"/>
+                <field name="name" string="Tên bác sĩ"/>
+                <field name="specialty_id" string="Chuyên khoa"/>
+                <field name="degree" string="Học vị"/>
+                <field name="consultation_fee" widget="monetary" string="Phí khám"/>
+                <field name="work_phone" string="Điện thoại"/>
+                <field name="department_id" string="Phòng ban"/>
+                <field name="is_available" widget="boolean_toggle" string="Nhận khám"/>
+                <field name="total_visits" string="Tổng lịch khám"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_pediatric_doctor" model="ir.actions.act_window">
+        <field name="name">Danh sách Bác sĩ</field>
+        <field name="res_model">pediatric.doctor</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>
