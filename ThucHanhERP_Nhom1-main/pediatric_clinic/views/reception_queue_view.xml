@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="view_reception_queue_list" model="ir.ui.view">
+        <field name="name">reception.queue.list</field>
+        <field name="model">reception.queue</field>
+        <field name="arch" type="xml">
+            <list string="Hàng chờ tiếp nhận"
+                  default_order="priority_level desc, queue_number asc"
+                  decoration-danger="priority_level == 'urgent'"
+                  decoration-warning="priority_level == 'followup'"
+                  decoration-muted="state in ['done','cancelled']">
+
+               
+                <field name="queue_number" string="STT"/>
+                <field name="state" widget="badge"
+                       string="Trạng thái"
+                       decoration-success="state == 'done'"
+                       decoration-info="state == 'in_progress'"/>
+                <field name="priority_level" widget="badge"
+                       string="Ưu tiên"
+                       decoration-danger="priority_level == 'urgent'"
+                       decoration-info="priority_level == 'normal'"/>
+
+               
+                <field name="appointment_date" string="Ngày khám"/>
+                <field name="session" string="Buổi"/>
+
+           
+                <field name="patient_name" string="Bệnh nhi"/>
+                <field name="patient_age" string="Tuổi"/>
+                <field name="parent_name" string="Phụ huynh"/>
+
+             
+                <field name="booking_method" string="Phương thức đặt lịch"/>
+                <field name="specialty_id" string="Chuyên khoa"/>
+                <field name="doctor_id" string="Bác sĩ"/>
+                <field name="estimated_fee" string="Phí khám dự kiến"/>
+
+            
+                <field name="receptionist_id"
+                       string="Lễ tân"
+                       optional="show"
+                       widget="many2one_avatar"/>
+
+
+                <field name="booking_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="view_reception_queue_search" model="ir.ui.view">
+        <field name="name">reception.queue.search</field>
+        <field name="model">reception.queue</field>
+        <field name="arch" type="xml">
+            <search string="Tìm hàng chờ">
+                <field name="queue_number"/>
+                <field name="patient_name"/>
+                <field name="receptionist_id"/>
+
+                <filter name="today" string="Hôm nay"
+                        domain="[('registration_date','>=', context_today())]"/>
+                <filter name="urgent" string="Khẩn"
+                        domain="[('priority_level','=','urgent')]"/>
+
+                <group expand="0" string="Nhóm theo">
+                    <filter name="g_state" string="Trạng thái"
+                            context="{'group_by':'state'}"/>
+                    <filter name="g_receptionist" string="Nhân viên tiếp đón"
+                            context="{'group_by':'receptionist_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="view_reception_queue_form" model="ir.ui.view">
+        <field name="name">reception.queue.form</field>
+        <field name="model">reception.queue</field>
+        <field name="arch" type="xml">
+            <form string="Tiếp nhận khám">
+                <header>
+                    <field name="state" widget="statusbar"
+                           options="{'clickable': true}"
+                           statusbar_visible="waiting,in_progress,done,cancelled"/>
+                </header>
+
+                <sheet>
+
+                
+                    <div class="oe_title">
+                        <h1>
+                            <field name="queue_number" readonly="1"/>
+                        </h1>
+                        <h2>
+                            <field name="patient_name" placeholder="Tên bệnh nhi" readonly="0"/>
+                        </h2>
+                    </div>
+
+                
+                    <group col="2">
+
+                    
+                        <group string="Tiếp nhận">
+                            <field name="receptionist_id"
+                                   string="Nhân viên lễ tân phụ trách"
+                                   options="{'no_create': True}"/>
+                            <field name="registration_date" readonly="1"/>
+
+                            <field name="booking_id" string="Phiếu đặt lịch"/>
+                            <field name="booking_method" string="Phương thức đặt lịch"/>
+
+                        
+                            <field name="appointment_date" string="Ngày khám"/>
+                            <field name="session" string="Buổi khám"/>
+                        </group>
+
+                        
+                        <group string="Điều phối khám">
+                            <field name="specialty_id" string="Chuyên khoa"/>
+                            <field name="doctor_id" string="Bác sĩ khám"/>
+                            <field name="estimated_fee" string="Phí khám dự kiến"/>
+
+                            <field name="exam_room" string="Phòng khám"/>
+
+                            <field name="priority_level"
+                                   string="Mức độ ưu tiên"
+                                   widget="radio"
+                                   options="{'horizontal': true}"/>
+                        </group>
+
+                    </group>
+
+                
+                    <notebook>
+
+                    
+                        <page string="Bệnh nhi &amp; phụ huynh">
+                            <group col="2">
+                                <group string="Bệnh nhi">
+                                    <field name="patient_id" string="Hồ sơ bệnh nhi"/>
+                                    <field name="patient_name" string="Tên bệnh nhi"/>
+                                    <field name="patient_gender" string="Giới tính"/>
+                                    <field name="patient_dob" string="Ngày sinh"/>
+                                    <field name="patient_age" string="Tuổi" readonly="1"/>
+                                    <field name="weight" string="Cân nặng (kg)"/>
+                                    <field name="height" string="Chiều cao (cm)"/>
+                                </group>
+
+                                <group string="Phụ huynh / Người giám hộ">
+                                    <field name="parent_name" string="Tên phụ huynh"/>
+                                    <field name="relationship" string="Quan hệ với bệnh nhi"/>
+                                    <field name="contact_phone" widget="phone" string="SĐT liên hệ"/>
+                                    <field name="contact_email" widget="email" string="Email (nếu có)"/>
+                                </group>
+                            </group>
+                        </page>
+
+                    
+                        <page string="Tình trạng ban đầu">
+                            <group col="2">
+                                <group string="Triệu chứng &amp; chẩn đoán sơ bộ">
+                                    <field name="symptoms" string="Triệu chứng ban đầu"/>
+                                    <field name="preliminary_diagnosis" string="Chẩn đoán ban đầu (nếu có)"/>
+                                    <field name="condition_at_registration"
+                                           string="Tình trạng khi tiếp nhận"
+                                           colspan="2"/>
+                                </group>
+
+                                <group string="Phân loại bệnh &amp; bệnh mãn tính">
+                                    <field name="disease_category" string="Phân loại bệnh"/>
+                                    <field name="has_chronic_disease" string="Có bệnh lý mãn tính?"/>
+                                    <field name="chronic_disease_details"
+                                           string="Chi tiết bệnh mãn tính"/>
+                                </group>
+                            </group>
+                        </page>
+
+                   
+                        <page string="Theo dõi">
+                            <group col="2">
+                                <group string="Tái khám">
+                                    <field name="followup_required" string="Cần tái khám?"/>
+                                    <field name="followup_date" string="Ngày tái khám dự kiến"/>
+                                </group>
+                                <group string="Ghi chú thêm">
+                                    <field name="notes" colspan="2"/>
+                                </group>
+                            </group>
+                        </page>
+
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+
+    <record id="action_reception_queue" model="ir.actions.act_window">
+        <field name="name">Hàng chờ khám</field>
+        <field name="res_model">reception.queue</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_reception_queue_search"/>
+        <field name="context">{'search_default_today': 1}</field>
+    </record>
+
+</odoo>

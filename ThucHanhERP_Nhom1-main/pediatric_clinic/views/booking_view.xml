@@ -1,0 +1,174 @@
+<odoo>
+
+ 
+  <record id="view_pediatric_booking_list" model="ir.ui.view">
+    <field name="name">pediatric.booking.list</field>
+    <field name="model">pediatric.booking</field>
+    <field name="arch" type="xml">
+      <list string="Danh sách lịch hẹn" default_order="appointment_date desc, booking_time desc">
+        <field name="parent_name" string="Họ tên phụ huynh"/>
+        <field name="parent_phone" string="SĐT phụ huynh"/>
+        <field name="child_name" string="Bệnh nhi"/>
+        <field name="appointment_date" string="Ngày khám"/>
+        <field name="session" string="Buổi khám"/>
+        <field name="booking_method" string="Phương thức đặt lịch"/>
+        <field name="priority_level" string="Mức độ ưu tiên"/>
+        <field name="state" widget="badge" string="Trạng thái"/>
+        <field name="booking_time" string="Thời điểm đặt lịch"/>
+        <field name="can_edit" string="Cho phép sửa / hủy"/>
+      </list>
+    </field>
+  </record>
+
+  
+  <record id="view_pediatric_booking_form" model="ir.ui.view">
+    <field name="name">pediatric.booking.form</field>
+    <field name="model">pediatric.booking</field>
+    <field name="arch" type="xml">
+      <form string="Thông tin đặt lịch">
+        <header>
+          <button name="action_create_queue"
+                  type="object"
+                  string="Đưa vào hàng chờ"
+                  class="btn-primary"/>
+          <button name="action_open_queues"
+                  type="object"
+                  string="Xem hàng chờ"
+                  class="oe_highlight"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,cancel"/>
+        </header>
+
+        <sheet>
+
+          
+          <div class="oe_button_box" name="button_box">
+            
+            <button type="object"
+                    name="action_open_queues"
+                    class="oe_stat_button"
+                    icon="fa-list-ol">
+              <field name="queue_count" string="Hàng chờ" widget="statinfo"/>
+            </button>
+
+            
+            <button type="object"
+                    name="action_open_calendar_event"
+                    class="oe_stat_button"
+                    icon="fa-calendar"
+                    modifiers="{'invisible': [['calendar_event_id','=', False]]}">
+              <div class="o_stat_info">
+                <span class="o_stat_text">Sự kiện</span>
+                <span class="o_stat_text">lịch</span>
+              </div>
+            </button>
+          </div>
+
+          <div class="oe_title">
+            <h1>
+              <span>Tạo lịch khám cho: </span>
+              <field name="child_name" readonly="1"/>
+            </h1>
+          </div>
+
+          
+          <group col="1">
+            <group string="Hồ sơ người nhà (nếu đã có)">
+              <field name="family_member_id"/>
+            </group>
+          </group>
+
+          
+          <group string="Thông tin người nhà bệnh nhi" col="4">
+            <field name="parent_name" colspan="2"/>
+            <field name="parent_birth_date"/>
+            <field name="parent_gender"/>
+            <field name="parent_phone"/>
+            <field name="parent_email"/>
+            <field name="relationship"/>
+          </group>
+
+          
+          <group string="Thông tin bệnh nhi" col="4">
+            <field name="patient_id" colspan="2"/>
+            <field name="child_name" colspan="2"/>
+            <field name="child_birth_date"/>
+            <field name="child_gender"/>
+            <field name="weight"/>
+            <field name="height"/>
+          </group>
+
+          
+          <group string="Thông tin lịch hẹn" col="4">
+            <field name="booking_method" colspan="2"/>
+
+            <field name="specialty_id"
+                   string="Chọn chuyên khoa"
+                   modifiers="{'invisible': [['booking_method','!=','by_department']]}"/>
+
+            <field name="doctor_id"
+                   string="Chọn bác sĩ"
+                   modifiers="{'invisible': [['booking_method','not in',['by_doctor','by_department']]]}"/>
+
+            <field name="estimated_fee"
+                   string="Phí khám dự kiến"
+                   widget="monetary"
+                   readonly="1"
+                   modifiers="{'invisible': [['booking_method','not in',['by_doctor','by_department']]]}"/>
+
+            <field name="appointment_date"/>
+            <field name="session"/>
+
+            <field name="priority_level"/>
+
+            
+            <field name="calendar_event_id" invisible="1"/>
+          </group>
+
+          
+          <group string="Lý do khám &amp; triệu chứng" col="2">
+            <div class="text-muted" colspan="2">
+              <span class="fa fa-pencil"/>
+              <span>
+                Vui lòng mô tả rõ triệu chứng của bệnh nhi và nhu cầu thăm khám.
+              </span>
+            </div>
+            <field name="reason"
+                   placeholder="Vui lòng mô tả rõ triệu chứng của bệnh nhi và nhu cầu thăm khám."
+                   colspan="2"/>
+            <field name="symptoms" placeholder="Ghi nhận thêm triệu chứng (nhân viên y tế sử dụng)"/>
+            <field name="condition_at_registration" placeholder="Tình trạng khi tiếp nhận"/>
+            <field name="preliminary_diagnosis" placeholder="Chẩn đoán sơ bộ (nếu có)"/>
+          </group>
+
+          
+          <group string="Thông tin hệ thống" col="4">
+            <field name="booking_time" readonly="1"/>
+            <field name="can_edit" readonly="1"/>
+          </group>
+
+          
+          <separator string="Hàng chờ đã tạo"/>
+          <group>
+            <field name="queue_ids" readonly="1">
+              <list string="Hàng chờ liên quan" default_order="queue_number asc">
+                <field name="queue_number"/>
+                <field name="patient_name"/>
+                <field name="priority_level"/>
+                <field name="state"/>
+              </list>
+            </field>
+          </group>
+
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  
+  <record id="action_pediatric_booking" model="ir.actions.act_window">
+    <field name="name">Lịch hẹn khám</field>
+    <field name="res_model">pediatric.booking</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+</odoo>

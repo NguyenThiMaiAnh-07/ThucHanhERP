@@ -1,0 +1,77 @@
+<odoo>
+
+    <record id="action_pediatric_patient" model="ir.actions.act_window">
+        <field name="name">Hồ sơ Bệnh nhân</field>
+        <field name="res_model">pediatric.patient</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_pediatric_family_member" model="ir.actions.act_window">
+        <field name="name">Người nhà / Phụ huynh</field>
+        <field name="res_model">pediatric.family.member</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+    <menuitem id="menu_pediatric_root"
+              name="Phòng Khám Nhi Khoa"
+              sequence="10"
+              web_icon="pediatric_clinic,static/description/icon.png"/>
+
+
+    <menuitem id="menu_pediatric_doctor"
+              name="Bác sĩ"
+              parent="menu_pediatric_root"
+              action="action_pediatric_doctor"
+              sequence="10"/>
+
+
+    <menuitem id="menu_pediatric_receptionist"
+              name="Lễ tân"
+              parent="menu_pediatric_root"
+              action="action_pediatric_receptionist"
+              sequence="20"/>
+
+
+    <menuitem id="menu_pediatric_specialty"
+              name="Danh mục chuyên khoa"
+              parent="menu_pediatric_root"
+              action="action_pediatric_specialty"
+              sequence="30"/>
+
+
+    <menuitem id="menu_pediatric_family_member"
+              name="Người nhà"
+              parent="menu_pediatric_root"
+              action="action_pediatric_family_member"
+              sequence="50"/>
+
+
+    <menuitem id="menu_pediatric_patient"
+              name="Bệnh nhân"
+              parent="menu_pediatric_root"
+              action="action_pediatric_patient"
+              sequence="60"/>
+
+
+    <menuitem id="menu_pediatric_booking"
+              name="Đặt lịch khám"
+              parent="menu_pediatric_root"
+              action="action_pediatric_booking"
+              sequence="70"/>
+
+
+    <menuitem id="menu_reception_queue"
+              name="Hàng chờ khám"
+              parent="menu_pediatric_root"
+              action="action_reception_queue"
+              sequence="80"/>
+
+
+    <menuitem id="menu_pediatric_appointment"
+              name="Lịch Tái Khám"
+              parent="menu_pediatric_root"
+              action="action_pediatric_appointment"
+              sequence="90"/>
+
+</odoo>
