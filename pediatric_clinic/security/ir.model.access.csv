@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pediatric_doctor,access.pediatric.doctor,model_pediatric_doctor,,1,1,1,1
+access_pediatric_patient,access.pediatric.patient,model_pediatric_patient,,1,1,1,1
+access_pediatric_receptionist,access.pediatric.receptionist,model_pediatric_receptionist,,1,1,1,1
+access_pediatric_booking,access.pediatric.booking,model_pediatric_booking,,1,1,1,1
+access_pediatric_family_member,access.pediatric.family.member,model_pediatric_family_member,,1,1,1,1
+access_pediatric_appointment,access.pediatric.appointment,model_pediatric_appointment,,1,1,1,1
+access_reception_queue,access.reception.queue,model_reception_queue,,1,1,1,1
+access_pediatric_specialty,access.pediatric.specialty,model_pediatric_specialty,,1,1,1,1
+access_pediatric_receptionist_schedule,access.pediatric.receptionist.schedule,model_pediatric_receptionist_schedule,,1,1,1,1
+access_pediatric_doctor_schedule,access.pediatric.doctor.schedule,model_pediatric_doctor_schedule,,1,1,1,1

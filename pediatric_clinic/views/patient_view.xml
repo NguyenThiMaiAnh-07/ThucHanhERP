@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    
+    <record id="view_pediatric_patient_list" model="ir.ui.view">
+        <field name="name">pediatric.patient.list</field>
+        <field name="model">pediatric.patient</field>
+        <field name="arch" type="xml">
+            <list string="Danh sách Bệnh nhân" default_order="name asc"
+                  decoration-danger="age &lt;= 1"
+                  decoration-warning="age &gt;= 5">
+                <field name="name"/>
+                <field name="age"/>
+                <field name="gender"/>
+                <field name="family_member_id"/>
+                <field name="phone"/>
+                <field name="doctor_id"/>
+            </list>
+        </field>
+    </record>
+
+  
+    <record id="view_pediatric_patient_form" model="ir.ui.view">
+        <field name="name">pediatric.patient.form</field>
+        <field name="model">pediatric.patient</field>
+        <field name="arch" type="xml">
+            <form string="Thông tin Bệnh nhân">
+                <header/>
+
+                <sheet>
+                    
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_queues"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-list-ol">
+                            <field name="queue_count" string="Hàng chờ" widget="statinfo"/>
+                        </button>
+
+                        <button name="action_open_bookings"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-calendar">
+                            <field name="booking_count" string="Đặt lịch" widget="statinfo"/>
+                        </button>
+
+                        <button name="action_open_appointments"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-calendar-check-o">
+                            <field name="appointment_count" string="Lịch tái khám" widget="statinfo"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name" string="Họ và tên trẻ"/>
+                        <h1>
+                            <field name="name" placeholder="VD: Bé Nguyễn Văn A"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Hành chính">
+                            <field name="family_member_id" placeholder="Chọn người nhà/phụ huynh"/>
+                            <field name="gender"/>
+                            <field name="date_of_birth"/>
+                            <field name="age" readonly="1"/>
+                            <field name="doctor_id"/>
+                        </group>
+
+                        <group string="Liên lạc &amp; Y tế">
+                            <field name="phone" widget="phone"/>
+                            <field name="address"/>
+                            <field name="blood_group"/>
+                            <field name="medical_history"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+
+                   
+                    <group string="Thông tin thẻ BHYT" col="4">
+                        <field name="bhyt_code" colspan="4"/>
+                        <field name="bhyt_valid_from" string="Giá trị từ ngày"/>
+                        <field name="bhyt_valid_to" string="Giá trị đến ngày"/>
+                    </group>
+
+                    <separator string="Lịch sử khám"/>
+
+                    <notebook>
+
+                   
+                        <page string="Chi tiết hàng chờ">
+                            <field name="queue_ids" readonly="1">
+                                <list string="Các lượt vào hàng chờ" default_order="create_date desc">
+                                    <field name="queue_number"/>
+                                    <field name="create_date" string="Ngày đăng ký"/>
+
+                                
+                                    <field name="booking_method" string="Phương thức đặt lịch"/>
+                                    <field name="specialty_id" string="Chuyên khoa"/>
+                                    <field name="doctor_id" string="Bác sĩ"/>
+
+                                    <field name="priority_level" widget="badge"
+                                           decoration-danger="priority_level == 'urgent'"
+                                           decoration-info="priority_level == 'normal'"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'done'"
+                                           decoration-warning="state == 'waiting'"/>
+                                </list>
+                            </field>
+                        </page>
+
+                     
+                        <page string="Lịch khám đã đặt">
+                            <field name="booking_ids" readonly="1">
+                                <list string="Phiếu đặt lịch" default_order="appointment_date desc">
+                                    <field name="appointment_date"/>
+                                    <field name="session"/>
+                                    <field name="booking_method"/>
+                                    <field name="department"/>
+                                    <field name="doctor_name"/>
+                                    <field name="priority_level"/>
+                                    <field name="booking_time"/>
+                                </list>
+                            </field>
+                        </page>
+
+                   
+                        <page string="Lịch tái khám">
+                            <field name="appointment_ids" readonly="1">
+                                <list string="Lịch tái khám" default_order="appointment_datetime desc">
+                                    <field name="name"/>
+                                    <field name="appointment_datetime"/>
+                                    <field name="doctor_id"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'done'"
+                                           decoration-warning="state == 'waiting'"/>
+                                    <field name="priority" widget="priority"/>
+                                </list>
+                            </field>
+                        </page>
+
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_pediatric_patient" model="ir.actions.act_window">
+        <field name="name">Bệnh nhân</field>
+        <field name="res_model">pediatric.patient</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

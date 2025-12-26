@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+
+    <record id="action_receptionist_calendar" model="ir.actions.act_window">
+        <field name="name">Lịch làm việc</field>
+        <field name="res_model">calendar.event</field>
+        <field name="view_mode">calendar,list</field>
+        <field name="context">{'default_mode': 'week'}</field>
+    </record>
+
+  
+
+    <record id="view_receptionist_form" model="ir.ui.view">
+        <field name="name">pediatric.receptionist.form</field>
+        <field name="model">pediatric.receptionist</field>
+        <field name="arch" type="xml">
+            <form string="Thông tin lễ tân">
+                <sheet>
+
+                
+                    <div class="oe_button_box" name="button_box">
+
+                    
+                        <button name="action_view_employee"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-id-card-o">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Hồ sơ</span>
+                                <span class="o_stat_text">Nhân sự</span>
+                            </div>
+                        </button>
+
+                    
+                        <button name="%(action_receptionist_calendar)d"
+                                type="action"
+                                class="oe_stat_button"
+                                icon="fa-calendar">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Lịch</span>
+                                <span class="o_stat_text">Làm việc</span>
+                            </div>
+                        </button>
+
+                  
+                        <button name="action_view_receptionist_queues"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-users">
+                            <field name="handled_patients"
+                                   string="Hồ sơ tiếp nhận"
+                                   widget="statinfo"/>
+                        </button>
+
+                   
+                        <button name="%(action_pediatric_appointment)d"
+                                type="action"
+                                class="oe_stat_button"
+                                icon="fa-calendar-check-o">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Đặt lịch</span>
+                                <span class="o_stat_text">Tái khám</span>
+                            </div>
+                        </button>
+
+                    </div>
+
+                
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" string="Họ tên" readonly="1"
+                                   placeholder="Nhân viên lễ tân"/>
+                        </h1>
+                        <h2>
+                            <field name="employee_code" string="Mã nhân viên" readonly="1"/>
+                        </h2>
+                    </div>
+
+                
+                    <group col="2">
+
+                   
+                        <group string="Nhân sự &amp; thông tin cá nhân">
+                        
+                            <field name="employee_id"
+                                   string="Chọn nhân viên lễ tân"
+                                   context="{'default_department_id': employee_department}"
+                                   domain="[('department_id.name', '=', 'Receptionist')]"/>
+
+                        
+                            <field name="employee_image" widget="image" class="oe_avatar"/>
+
+                        
+                            <field name="gender" string="Giới tính"/>
+                            <field name="date_of_birth" string="Ngày sinh" readonly="1"/>
+                            <field name="marital" string="Hôn nhân" readonly="1"/>
+                            <field name="children" string="Số con" readonly="1"/>
+
+                        
+                            <field name="place_of_birth" string="Nơi sinh"/>
+                            <field name="id_card" string="CMND/CCCD"/>
+                            <field name="issue_date" string="Ngày cấp"/>
+                            <field name="issue_place" string="Nơi cấp"/>
+                        </group>
+
+                    
+                        <group string="Liên hệ &amp; bảo hiểm">
+                        
+                            <field name="employee_department" string="Phòng ban" readonly="1"/>
+                            <field name="employee_phone" string="Điện thoại nhân sự" readonly="1"/>
+                            <field name="employee_email" string="Email nhân sự" readonly="1"/>
+
+                        
+                            <field name="address" string="Địa chỉ"/>
+
+                        
+                            <field name="insurance_code" string="Mã số BHYT"/>
+                            <field name="insurance_start" string="Giá trị từ ngày"/>
+                            <field name="insurance_end" string="Giá trị đến ngày"/>
+                        </group>
+
+                    </group>
+
+                    <notebook>
+
+                    
+                        <page string="Công việc &amp; lịch làm việc">
+                            <group col="2">
+                                <group string="Thông tin công việc">
+                                    <field name="status" string="Trạng thái"/>
+                                    <field name="hire_date" string="Ngày vào làm"/>
+                                    <field name="desk_number" string="Số quầy lễ tân"/>
+                                    <field name="computer_code" string="Mã máy làm việc"/>
+                                </group>
+
+                                <group string="KPI nhanh">
+                                    <field name="today_received" string="Tiếp nhận hôm nay" readonly="1"/>
+                                    <field name="handled_patients" string="Tổng hồ sơ tiếp nhận" readonly="1"/>
+                                    <field name="total_processed_bookings"
+                                           string="Tổng phiếu booking đã duyệt"
+                                           readonly="1"/>
+                                </group>
+                            </group>
+
+                        
+                            <group string="Lịch làm việc theo ca">
+                                <field name="schedule_ids" widget="one2many_list"/>
+                            </group>
+                        </page>
+
+                    
+                        <page string="Đánh giá &amp; ghi chú">
+                            <group col="2">
+                                <group string="Đánh giá">
+                                    <field name="note_positive"/>
+                                    <field name="note_negative"/>
+                                </group>
+                                <group string="Ghi chú khác">
+                                    <field name="notes"/>
+                                </group>
+                            </group>
+                        </page>
+
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="view_receptionist_list" model="ir.ui.view">
+        <field name="name">pediatric.receptionist.list</field>
+        <field name="model">pediatric.receptionist</field>
+        <field name="arch" type="xml">
+            <list string="Danh sách lễ tân">
+                <field name="employee_code" string="Mã nhân viên"/>
+                <field name="name" string="Họ tên"/>
+                <field name="gender" string="Giới tính"/>
+                <field name="employee_phone" string="Điện thoại nhân sự"/>
+                <field name="employee_email" string="Email nhân sự"/>
+                <field name="status" string="Trạng thái"/>
+                <field name="today_received" string="Tiếp nhận hôm nay"/>
+                <field name="handled_patients" string="Tổng hồ sơ tiếp nhận"/>
+            </list>
+        </field>
+    </record>
+
+
+
+    <record id="view_receptionist_schedule_list" model="ir.ui.view">
+        <field name="name">pediatric.receptionist.schedule.list</field>
+        <field name="model">pediatric.receptionist.schedule</field>
+        <field name="arch" type="xml">
+            <list string="Lịch làm việc lễ tân" editable="bottom">
+                <field name="weekday"/>
+                <field name="shift"/>
+                <field name="time_start" widget="float_time"/>
+                <field name="time_end" widget="float_time"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="action_pediatric_receptionist" model="ir.actions.act_window">
+        <field name="name">Nhân viên Lễ tân</field>
+        <field name="res_model">pediatric.receptionist</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>
